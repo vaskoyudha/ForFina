@@ -150,18 +150,6 @@ function validateDate() {
                 startCountdown();
                 updateDaysTogether();
                 initializeParticles();
-
-                // Auto-play music (User interaction confirmed)
-                if (!isMusicPlaying) {
-                    bgMusic.currentTime = 78; // Start at 1:18
-                    bgMusic.play().then(() => {
-                        isMusicPlaying = true;
-                        const icon = musicToggle.querySelector('#musicIcon');
-                        if (icon) icon.textContent = '🎵';
-                    }).catch(err => {
-                        console.log('Music play failed:', err);
-                    });
-                }
             }, 600);
         }, 500);
     } else {
@@ -487,7 +475,12 @@ document.head.appendChild(particleStyle);
 // ========================================
 // CINEMATIC INTRO LOGIC (ENHANCED)
 // ========================================
+// ========================================
+// CINEMATIC INTRO LOGIC (ENHANCED)
+// ========================================
 window.addEventListener('load', () => {
+    const startOverlay = document.getElementById('startOverlay');
+    const startBtn = document.getElementById('startBtn');
     const introOverlay = document.getElementById('introOverlay');
     const scenes = document.querySelectorAll('.intro-scene');
     const lightBurst = document.querySelector('.light-burst');
@@ -505,8 +498,27 @@ window.addEventListener('load', () => {
         { delay: 7500, duration: 1500 }   // Scene 4 (Signature)
     ];
 
-    // Play intro sequence
-    playIntroSequence();
+    // Wait for user to click "Ready"
+    startBtn.addEventListener('click', () => {
+        // Hide start screen
+        startOverlay.style.opacity = '0';
+        setTimeout(() => {
+            startOverlay.style.display = 'none';
+            // Start Music
+            if (!isMusicPlaying) {
+                bgMusic.currentTime = 78; // Start at 1:18
+                bgMusic.play().then(() => {
+                    isMusicPlaying = true;
+                    const icon = musicToggle.querySelector('#musicIcon');
+                    if (icon) icon.textContent = '🎵';
+                }).catch(err => {
+                    console.log('Music play failed:', err);
+                });
+            }
+            // Start Intro Animation
+            playIntroSequence();
+        }, 500);
+    });
 
     function playIntroSequence() {
         // Scene 1: "Sebuah kejutan kecil..."
