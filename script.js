@@ -150,6 +150,18 @@ function validateDate() {
                 startCountdown();
                 updateDaysTogether();
                 initializeParticles();
+
+                // Auto-play music (User interaction confirmed)
+                if (!isMusicPlaying) {
+                    bgMusic.currentTime = 78; // Start at 1:18
+                    bgMusic.play().then(() => {
+                        isMusicPlaying = true;
+                        const icon = musicToggle.querySelector('#musicIcon');
+                        if (icon) icon.textContent = '🎵';
+                    }).catch(err => {
+                        console.log('Music play failed:', err);
+                    });
+                }
             }, 600);
         }, 500);
     } else {
@@ -357,18 +369,7 @@ let isMusicPlaying = false;
 const bgMusic = new Audio('assets/music.mp3');
 bgMusic.loop = true;
 
-// Auto-play music after intro (start at 1:18)
-setTimeout(() => {
-    bgMusic.currentTime = 78; // 1 minute 18 seconds
-    bgMusic.play().then(() => {
-        isMusicPlaying = true;
-        const icon = musicToggle.querySelector('#musicIcon');
-        if (icon) icon.textContent = '🎵';
-    }).catch(err => {
-        console.log('Auto-play blocked by browser:', err);
-        // User needs to interact first
-    });
-}, 10500); // After intro finishes (10.5 seconds)
+// Auto-play logic moved to Gate validation (User Interaction)
 
 musicToggle.addEventListener('click', toggleMusic);
 
@@ -638,9 +639,88 @@ window.addEventListener('load', () => {
 });
 */
 
-// Add smooth scroll for letter content
-letterContainer.addEventListener('wheel', (e) => {
-    e.stopPropagation();
-});
+// ========================================
+// FIREWORKS EFFECT
+// ========================================
+function launchFireworks() {
+    const container = document.getElementById('fireworksContainer');
+    container.classList.add('active');
+
+    const colors = ['fw-pink', 'fw-gold', 'fw-purple', 'fw-cyan', 'fw-red'];
+    const burstCount = 15; // Number of firework bursts
+
+    for (let i = 0; i < burstCount; i++) {
+        setTimeout(() => {
+            createFireworkBurst(container, colors);
+        }, i * 400); // Stagger the bursts
+    }
+
+    // Hide container after all fireworks finish
+    setTimeout(() => {
+        container.classList.remove('active');
+        setTimeout(() => {
+            container.innerHTML = ''; // Clear particles
+        }, 500);
+    }, burstCount * 400 + 3000);
+}
+
+function createFireworkBurst(container, colors) {
+    // Random position
+    const x = Math.random() * (window.innerWidth - 200) + 100;
+    const y = Math.random() * (window.innerHeight * 0.5) + 50;
+
+    // Random color
+    const color = colors[Math.floor(Math.random() * colors.length)];
+
+    // Create rocket
+    const rocket = document.createElement('div');
+    rocket.className = 'firework-rocket';
+    rocket.style.left = x + 'px';
+    rocket.style.top = window.innerHeight + 'px';
+    container.appendChild(rocket);
+
+    // Explode after rocket reaches position
+    setTimeout(() => {
+        rocket.remove();
+        createExplosion(container, x, y, color);
+    }, 1000);
+}
+
+function createExplosion(container, x, y, color) {
+    const particleCount = 80; // Particles per burst
+    const animations = ['explode1', 'explode2', 'explode3'];
+
+    for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = `firework-particle ${color}`;
+
+        // Calculate explosion vector
+        const angle = (Math.PI * 2 * i) / particleCount;
+        const velocity = 100 + Math.random() * 100;
+        const tx = Math.cos(angle) * velocity;
+        const ty = Math.sin(angle) * velocity + (Math.random() * 50); // Add gravity effect
+
+        particle.style.left = x + 'px';
+        particle.style.top = y + 'px';
+        particle.style.setProperty('--tx', tx + 'px');
+        particle.style.setProperty('--ty', ty + 'px');
+
+        // Random animation
+        const anim = animations[Math.floor(Math.random() * animations.length)];
+        particle.style.animation = `${anim} ${1.5 + Math.random()}s ease-out forwards`;
+
+        container.appendChild(particle);
+
+        // Remove particle after animation
+        setTimeout(() => {
+            particle.remove();
+        }, 2500);
+    }
+}
+
+// Trigger fireworks after intro completes
+setTimeout(() => {
+    launchFireworks();
+}, 10000); // Start fireworks right after intro finishes
 
 console.log('💕 Website loaded successfully! Happy New Year 2026! 🎉');

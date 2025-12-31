@@ -2545,3 +2545,148 @@ body::before {
         display: none;
     }
 }
+
+/* ========================================
+   FIREWORKS EFFECT
+   ======================================== */
+.fireworks-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9998;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.fireworks-container.active {
+    opacity: 1;
+}
+
+.firework {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+/* Firework rocket going up */
+.firework-rocket {
+    position: absolute;
+    width: 3px;
+    height: 20px;
+    background: linear-gradient(to top, transparent, white);
+    border-radius: 50%;
+    animation: rocketLaunch 1s ease-out forwards;
+}
+
+@keyframes rocketLaunch {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(-400px) scale(0.5);
+        opacity: 0;
+    }
+}
+
+/* Firework particle burst */
+.firework-particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    box-shadow: 0 0 6px currentColor;
+}
+
+/* Particle trail effect */
+.firework-particle::before {
+    content: '';
+    position: absolute;
+    width: 2px;
+    height: 8px;
+    background: linear-gradient(to bottom, currentColor, transparent);
+    top: 4px;
+    left: 1px;
+}
+
+/* Firework colors */
+.fw-pink {
+    background: #ff6b9d;
+    color: #ff6b9d;
+    box-shadow: 0 0 10px #ff6b9d, 0 0 20px #ff6b9d;
+}
+
+.fw-gold {
+    background: #ffd700;
+    color: #ffd700;
+    box-shadow: 0 0 10px #ffd700, 0 0 20px #ffd700;
+}
+
+.fw-purple {
+    background: #8a2be2;
+    color: #8a2be2;
+    box-shadow: 0 0 10px #8a2be2, 0 0 20px #8a2be2;
+}
+
+.fw-cyan {
+    background: #00ffff;
+    color: #00ffff;
+    box-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
+}
+
+.fw-red {
+    background: #ff1744;
+    color: #ff1744;
+    box-shadow: 0 0 10px #ff1744, 0 0 20px #ff1744;
+}
+
+/* Particle explosion animations */
+@keyframes explode1 {
+    0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(var(--tx), var(--ty)) scale(0);
+        opacity: 0;
+    }
+}
+
+@keyframes explode2 {
+    0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(calc(var(--tx) * 1.2), calc(var(--ty) * 1.2)) scale(0);
+        opacity: 0;
+    }
+}
+
+@keyframes explode3 {
+    0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+    }
+
+    30% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(calc(var(--tx) * 0.8), calc(var(--ty) * 1.5)) scale(0);
+        opacity: 0;
+    }
+}
